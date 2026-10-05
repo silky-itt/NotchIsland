@@ -17,6 +17,7 @@ struct NotchView: View {
     @AppStorage(Settings.Key.activityNowPlaying) private var activityNowPlaying = Settings.Default.activityNowPlaying
     @AppStorage(Settings.Key.transparentCollapsed) private var transparentCollapsed = Settings.Default.transparentCollapsed
     @AppStorage(Settings.Key.showPet) private var showPet = Settings.Default.showPet
+    @AppStorage(Settings.Key.outlineCollapsed) private var outlineCollapsed = Settings.Default.outlineCollapsed
 
     @State private var isExpanded = false
     @State private var isHovering = false
@@ -81,6 +82,11 @@ struct NotchView: View {
         ZStack(alignment: .top) {
             // Experimental: transparent while collapsed; the black fades in as it expands (opacity animates with the spring)
             shape.fill(.black.opacity(isExpanded || !transparentCollapsed ? 1 : 0))
+
+            // Thin outline around the collapsed notch; it goes away while expanded
+            if outlineCollapsed && !isExpanded {
+                shape.stroke(.white.opacity(0.28), lineWidth: 1)
+            }
 
             if isExpanded {
                 ExpandedView(notchHeight: notchSize.height, isDropTargeted: isDropTargeted)

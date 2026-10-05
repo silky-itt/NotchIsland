@@ -10,6 +10,8 @@ enum Settings {
         static let showPercentage = "showPercentage"
         static let transparentCollapsed = "transparentCollapsed"
         static let showPet = "showPet"
+        static let outlineCollapsed = "outlineCollapsed"
+        static let pinDuringSpaceSwitch = "pinDuringSpaceSwitch"
         static let hudVolume = "hudVolume"
         static let hudBrightness = "hudBrightness"
         static let hudBluetooth = "hudBluetooth"
@@ -28,6 +30,8 @@ enum Settings {
         static let showPercentage = true
         static let transparentCollapsed = false
         static let showPet = true
+        static let outlineCollapsed = true
+        static let pinDuringSpaceSwitch = true
         static let hudVolume = true
         static let hudBrightness = true
         static let hudBluetooth = true
@@ -43,7 +47,7 @@ enum Settings {
         UserDefaults.standard.register(defaults: [
             Key.openOnHover: Default.openOnHover, Key.hoverDelay: Default.hoverDelay,
             Key.haptics: Default.haptics, Key.swipeGestures: Default.swipeGestures,
-            Key.showPercentage: Default.showPercentage, Key.transparentCollapsed: Default.transparentCollapsed, Key.showPet: Default.showPet, Key.hudVolume: Default.hudVolume, Key.hudBrightness: Default.hudBrightness,
+            Key.showPercentage: Default.showPercentage, Key.transparentCollapsed: Default.transparentCollapsed, Key.showPet: Default.showPet, Key.outlineCollapsed: Default.outlineCollapsed, Key.pinDuringSpaceSwitch: Default.pinDuringSpaceSwitch, Key.hudVolume: Default.hudVolume, Key.hudBrightness: Default.hudBrightness,
             Key.hudBluetooth: Default.hudBluetooth, Key.activityCharging: Default.activityCharging,
             Key.activityNowPlaying: Default.activityNowPlaying, Key.showMusic: Default.showMusic,
             Key.showCalendar: Default.showCalendar, Key.showShelf: Default.showShelf,

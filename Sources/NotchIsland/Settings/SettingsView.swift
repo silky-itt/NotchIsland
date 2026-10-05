@@ -10,6 +10,8 @@ struct SettingsView: View {
     @AppStorage(Settings.Key.swipeGestures) private var swipeGestures = Settings.Default.swipeGestures
     @AppStorage(Settings.Key.transparentCollapsed) private var transparentCollapsed = Settings.Default.transparentCollapsed
     @AppStorage(Settings.Key.showPet) private var showPet = Settings.Default.showPet
+    @AppStorage(Settings.Key.outlineCollapsed) private var outlineCollapsed = Settings.Default.outlineCollapsed
+    @AppStorage(Settings.Key.pinDuringSpaceSwitch) private var pinDuringSpaceSwitch = Settings.Default.pinDuringSpaceSwitch
     @AppStorage(Settings.Key.showPercentage) private var showPercentage = Settings.Default.showPercentage
     @AppStorage(Settings.Key.hudVolume) private var hudVolume = Settings.Default.hudVolume
     @AppStorage(Settings.Key.hudBrightness) private var hudBrightness = Settings.Default.hudBrightness
@@ -50,6 +52,12 @@ struct SettingsView: View {
             Section("Appearance") {
                 Toggle("Transparent notch when collapsed (experimental)", isOn: $transparentCollapsed)
                 Text("Only the real notch stays black; artwork, waveform and levels float over the menu bar. Turn off to go back to the black notch.")
+                    .font(.caption).foregroundStyle(.secondary)
+                Toggle("Thin outline around the collapsed notch", isOn: $outlineCollapsed)
+                Text("The outline disappears while the island is expanded.")
+                    .font(.caption).foregroundStyle(.secondary)
+                Toggle("Keep the island still when switching desktops", isOn: $pinDuringSpaceSwitch)
+                Text("Stops a second notch from sliding across the screen while swiping between desktops or full-screen apps. Quit and reopen NotchIsland to apply.")
                     .font(.caption).foregroundStyle(.secondary)
             }
 

@@ -6,6 +6,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: NotchPanel?
     private var geometry: NotchGeometry?
     private var panelController: PanelController?
+    private var notchSpace: NotchSpace?
 
     // Features live for the whole app lifetime and update on events
     private let battery = BatteryMonitor()
@@ -72,6 +73,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         geometry = new
 
         let panel = self.panel ?? NotchPanel()
+        if self.panel == nil, Settings.bool(Settings.Key.pinDuringSpaceSwitch) {
+            // Read once at launch: moving the window back out of the private Space is not reliable
+            let space = NotchSpace()
+            space.add(panel)
+            notchSpace = space
+        }
         self.panel = panel
 
         if let controller = panelController {
