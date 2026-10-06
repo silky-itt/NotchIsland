@@ -10,6 +10,7 @@ struct SettingsView: View {
     @AppStorage(Settings.Key.swipeGestures) private var swipeGestures = Settings.Default.swipeGestures
     @AppStorage(Settings.Key.transparentCollapsed) private var transparentCollapsed = Settings.Default.transparentCollapsed
     @AppStorage(Settings.Key.showPet) private var showPet = Settings.Default.showPet
+    @AppStorage(Settings.Key.petKind) private var petKind = Settings.Default.petKind
     @AppStorage(Settings.Key.outlineCollapsed) private var outlineCollapsed = Settings.Default.outlineCollapsed
     @AppStorage(Settings.Key.pinDuringSpaceSwitch) private var pinDuringSpaceSwitch = Settings.Default.pinDuringSpaceSwitch
     @AppStorage(Settings.Key.showPercentage) private var showPercentage = Settings.Default.showPercentage
@@ -62,7 +63,22 @@ struct SettingsView: View {
             }
 
             Section("Shown beside the notch") {
-                Toggle("Pet cat on the right (dances to music, happy when charging, sleepy on low battery)", isOn: $showPet)
+                Toggle("Pet on the right (dances to music, happy when charging, sleepy on low battery)", isOn: $showPet)
+                if showPet {
+                    Picker("Pet", selection: $petKind) {
+                        ForEach(PetKind.allCases) { kind in
+                            Label {
+                                Text(kind.title)
+                            } icon: {
+                                Image(decorative: kind.sprites.open, scale: 1)
+                                    .interpolation(.none)
+                                    .resizable()
+                                    .frame(width: 18, height: 18)
+                            }
+                            .tag(kind)
+                        }
+                    }
+                }
                 Toggle("Show percentage for volume & brightness", isOn: $showPercentage)
                 Toggle("Volume", isOn: $hudVolume)
                 Toggle("Brightness", isOn: $hudBrightness)

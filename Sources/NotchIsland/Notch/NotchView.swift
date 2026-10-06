@@ -17,6 +17,7 @@ struct NotchView: View {
     @AppStorage(Settings.Key.activityNowPlaying) private var activityNowPlaying = Settings.Default.activityNowPlaying
     @AppStorage(Settings.Key.transparentCollapsed) private var transparentCollapsed = Settings.Default.transparentCollapsed
     @AppStorage(Settings.Key.showPet) private var showPet = Settings.Default.showPet
+    @AppStorage(Settings.Key.petKind) private var petKind = Settings.Default.petKind
     @AppStorage(Settings.Key.outlineCollapsed) private var outlineCollapsed = Settings.Default.outlineCollapsed
 
     @State private var isExpanded = false
@@ -107,7 +108,7 @@ struct NotchView: View {
         // The cat stands outside the notch, just past its right edge, and follows that edge as it widens
         .overlay(alignment: .trailing) {
             if petVisible {
-                PetView(mood: petMood)
+                PetView(kind: petKind, mood: petMood)
                     .frame(width: Self.petSize, height: Self.petSize)
                     .offset(x: Self.petSize + Self.petGap)
                     .allowsHitTesting(false)

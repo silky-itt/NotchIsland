@@ -2,10 +2,19 @@
 # Builds a Release version and packages it as build/NotchIsland.app
 #   ./build.sh           build
 #   ./build.sh install   build + copy to /Applications + relaunch (needed for "Launch at Login")
+#   UNIVERSAL=1 ./build.sh   Apple Silicon + Intel binary (used by package.sh for releases)
 set -euo pipefail
 cd "$(dirname "$0")"
 
-swift build -c release
+if [[ "${UNIVERSAL:-}" == 1 ]]; then
+    ARCHS=(arm64 x86_64)
+    swift build -c release --arch arm64 --arch x86_64
+    PRODUCT=.build/apple/Products/Release/NotchIsland
+else
+    ARCHS=(arm64)
+    swift build -c release
+    PRODUCT=.build/release/NotchIsland
+fi
 
 # Assemble and sign in a temp dir outside ~/Desktop: iCloud/File Provider keeps re-adding extended
 # attributes (FinderInfo...) to folders there, and codesign refuses to sign a bundle that has them.
@@ -14,7 +23,7 @@ STAGE=$(mktemp -d "${TMPDIR:-/tmp}/notchisland.XXXXXX")
 trap 'rm -rf "$STAGE"' EXIT
 APP="$STAGE/NotchIsland.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources" "$APP/Contents/Frameworks"
-cp .build/release/NotchIsland "$APP/Contents/MacOS/"
+cp "$PRODUCT" "$APP/Contents/MacOS/"
 cp Resources/Info.plist "$APP/Contents/"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/"   # regenerate with: swift Tools/make-icon.swift
 
@@ -26,11 +35,15 @@ if [[ -d "$ADAPTER_SRC/src" ]]; then
     # Proper versioned framework layout, so the bundle can be code-signed and verified
     FW=.build/adapter/MediaRemoteAdapter.framework
     BIN="$FW/Versions/A/MediaRemoteAdapter"
-    if [[ ! -f "$BIN" || -n "$(find "$ADAPTER_SRC/src" -newer "$BIN" -name '*.m' | head -1)" ]]; then
-        echo "Building MediaRemoteAdapter.framework..."
+    # Rebuild when the sources changed or the binary lacks an architecture we need
+    if [[ ! -f "$BIN" || -n "$(find "$ADAPTER_SRC/src" -newer "$BIN" -name '*.m' | head -1)" ]] \
+        || ! lipo "$BIN" -verify_arch "${ARCHS[@]}" 2>/dev/null; then
+        echo "Building MediaRemoteAdapter.framework (${ARCHS[*]})..."
+        ARCH_FLAGS=()
+        for arch in "${ARCHS[@]}"; do ARCH_FLAGS+=(-arch "$arch"); done
         rm -rf "$FW"
         mkdir -p "$FW/Versions/A/Resources"
-        clang -dynamiclib -fobjc-arc -fvisibility=default -O2 -arch arm64 -mmacosx-version-min=14.0 \
+        clang -dynamiclib -fobjc-arc -fvisibility=default -O2 "${ARCH_FLAGS[@]}" -mmacosx-version-min=14.0 \
             -I"$ADAPTER_SRC/include" -I"$ADAPTER_SRC/src" \
             "$ADAPTER_SRC"/src/adapter/*.m "$ADAPTER_SRC"/src/private/MediaRemote.m "$ADAPTER_SRC"/src/utility/*.m \
             -framework Foundation -framework AppKit -framework UniformTypeIdentifiers \

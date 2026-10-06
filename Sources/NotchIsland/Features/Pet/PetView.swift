@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 
-/// What the cat is doing. It only reads state the app already has (music, battery), so it adds no monitoring.
+/// What the pet is doing. It only reads state the app already has (music, battery), so it adds no monitoring.
 enum PetMood: Equatable {
     case idle       // blinks and breathes
     case dancing    // music is playing
@@ -9,19 +9,24 @@ enum PetMood: Equatable {
     case tired      // battery low and not plugged in
 }
 
-/// The cat, animated with Core Animation: the frames and movement are played by WindowServer,
+/// The pet, animated with Core Animation: the frames and movement are played by WindowServer,
 /// so the app itself uses no CPU while it moves.
 struct PetView: NSViewRepresentable {
+    let kind: PetKind
     let mood: PetMood
 
     func makeNSView(context: Context) -> PetNSView { PetNSView() }
 
     func updateNSView(_ view: PetNSView, context: Context) {
+        view.kind = kind
         view.mood = mood
     }
 }
 
 final class PetNSView: NSView {
+    var kind: PetKind = .cat {
+        didSet { if kind != oldValue { startAnimations() } }
+    }
     var mood: PetMood = .idle {
         didSet { if mood != oldValue { startAnimations() } }
     }
@@ -56,16 +61,17 @@ final class PetNSView: NSView {
     private func startAnimations() {
         sprite.removeAllAnimations()
         guard window != nil else { return }
+        let sprites = kind.sprites
 
         switch mood {
         case .idle:
-            sprite.contents = PetSprites.open
-            sprite.add(frames([PetSprites.open, PetSprites.blink, PetSprites.open], at: [0, 0.94, 0.975], duration: 4), forKey: "frames")
+            sprite.contents = sprites.open
+            sprite.add(frames([sprites.open, sprites.blink, sprites.open], at: [0, 0.94, 0.975], duration: 4), forKey: "frames")
             sprite.add(breathing(amount: 0.04, duration: 1.6), forKey: "breathe")
 
         case .dancing:
-            sprite.contents = PetSprites.happy
-            sprite.add(frames([PetSprites.open, PetSprites.happy], at: [0, 0.5], duration: 1), forKey: "frames")
+            sprite.contents = sprites.happy
+            sprite.add(frames([sprites.open, sprites.happy], at: [0, 0.5], duration: 1), forKey: "frames")
             let sway = CAKeyframeAnimation(keyPath: "transform.rotation.z")
             sway.values = [-0.12, 0.12, -0.12]
             sway.keyTimes = [0, 0.5, 1]
@@ -76,12 +82,12 @@ final class PetNSView: NSView {
             sprite.add(hop(height: 1.5, duration: 0.5, at: 0.5), forKey: "hop")
 
         case .happy:
-            sprite.contents = PetSprites.happy
+            sprite.contents = sprites.happy
             sprite.add(breathing(amount: 0.04, duration: 1.6), forKey: "breathe")
             sprite.add(hop(height: 3, duration: 3, at: 0.85), forKey: "hop")
 
         case .tired:
-            sprite.contents = PetSprites.sleepy
+            sprite.contents = sprites.sleepy
             sprite.add(breathing(amount: 0.06, duration: 3), forKey: "breathe")
         }
     }

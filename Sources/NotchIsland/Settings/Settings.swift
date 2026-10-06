@@ -10,6 +10,7 @@ enum Settings {
         static let showPercentage = "showPercentage"
         static let transparentCollapsed = "transparentCollapsed"
         static let showPet = "showPet"
+        static let petKind = "petKind"
         static let outlineCollapsed = "outlineCollapsed"
         static let pinDuringSpaceSwitch = "pinDuringSpaceSwitch"
         static let hudVolume = "hudVolume"
@@ -30,6 +31,7 @@ enum Settings {
         static let showPercentage = true
         static let transparentCollapsed = false
         static let showPet = true
+        static let petKind = PetKind.cat
         static let outlineCollapsed = true
         static let pinDuringSpaceSwitch = true
         static let hudVolume = true

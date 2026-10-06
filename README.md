@@ -10,12 +10,33 @@ A "Dynamic Island" for the notch of your MacBook, written in SwiftUI + AppKit. I
 - **Bluetooth** connect / disconnect and a **charging** indicator
 - **Calendar**: today's remaining events, or the next one within 7 days
 - **Shelf**: drop files and images (from Finder, browsers, screenshots or the clipboard); click it to see everything on it
-- **Pet cat** next to the notch that dances to music
-- **Settings** window, plus an optional transparent collapsed notch
+- **Pet** next to the notch (cat, dog, bunny, panda or frog) that dances to music
+- **Stays put** under the real notch while you swipe between desktops
+- **Settings** window, plus an optional transparent collapsed notch and a thin outline around it
 
-## Getting started (for beginners)
+## Download (easiest)
 
-There is no ready-made download: you build the app once on your own Mac. It takes about five minutes and no programming knowledge.
+Needs **macOS 14 (Sonoma) or later**, on Apple Silicon or Intel. Music support is included.
+
+**Option A: one line in Terminal (recommended).** Open **Terminal** (press `⌘ Space`, type "Terminal", press Enter), paste this and press Enter:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/silky-itt/NotchIsland/main/install.sh | bash
+```
+
+It downloads the latest version, puts it in Applications and starts it. Run the same line again to update.
+
+**Option B: download the disk image.**
+
+1. Download `NotchIsland.dmg` from the [latest release](https://github.com/silky-itt/NotchIsland/releases/latest).
+2. Open it and drag **NotchIsland** onto **Applications**.
+3. Open NotchIsland from Applications. The first time, macOS says it cannot verify the developer (the app is free and not registered with Apple). Click **Done**, then go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway**. You only do this once.
+
+The island appears at the notch and the app starts by itself when you log in. Right-click the notch for **Settings…**.
+
+## Build it yourself
+
+If you prefer, you can build the app from the source code on your own Mac. It takes about five minutes and no programming knowledge.
 
 **You need:** a Mac running **macOS 14 (Sonoma) or later**. A MacBook with a notch looks best; on other Macs a notch-sized island is drawn at the top centre of the screen.
 
@@ -68,7 +89,7 @@ This builds the app, copies it to `/Applications/NotchIsland.app` and starts it.
 | See everything on the shelf | Click the shelf area inside the open island |
 | Control music | Use the buttons in the open island; click the app name to jump to the player |
 
-In **Settings** you can change the hover delay, turn individual panels and indicators on or off, hide the pet cat, switch to a transparent notch, and choose whether the app starts when you log in.
+In **Settings** you can change the hover delay, turn individual panels and indicators on or off, pick or hide the pet, switch to a transparent notch, and choose whether the app starts when you log in.
 
 ### Updating
 
@@ -103,11 +124,13 @@ git pull
 ```sh
 ./build.sh            # builds build/NotchIsland.app
 ./build.sh install    # also copies it to /Applications and relaunches (needed for "Launch at Login")
+./package.sh          # release disk image build/NotchIsland.dmg (Apple Silicon + Intel, music included)
 ./measure.sh          # RAM / CPU against a budget (add --quick to skip the hover leak check)
 ./dev.sh              # rebuild and relaunch whenever a .swift file is saved
 swift Tools/make-icon.swift   # regenerates the app icon
 ```
 
+- Publishing a release: bump the version in `Resources/Info.plist`, run `./package.sh`, then `gh release create v<version> build/NotchIsland.dmg`. Keep the asset name `NotchIsland.dmg`: `install.sh` and the download link use it.
 - Open `Package.swift` in Xcode to use SwiftUI previews (`Sources/NotchIsland/Expanded/Previews.swift`).
 - The brightness HUD uses a private macOS framework (DisplayServices). If a macOS update removes it, only that HUD is lost.
 - Hiding the macOS volume/brightness bars is optional and off by default; it works by intercepting those keys with an event tap.
