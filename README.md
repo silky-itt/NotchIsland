@@ -16,6 +16,8 @@ A "Dynamic Island" for the notch of your MacBook, written in SwiftUI + AppKit. I
 
 ## Download (easiest)
 
+> **Not available yet.** No ready-made version has been published so far. Until one appears under [Releases](https://github.com/silky-itt/NotchIsland/releases), use [Build it yourself](#build-it-yourself) below.
+
 Needs **macOS 14 (Sonoma) or later**, on Apple Silicon or Intel. Music support is included.
 
 **Option A: one line in Terminal (recommended).** Open **Terminal** (press `⌘ Space`, type "Terminal", press Enter), paste this and press Enter:

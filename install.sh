@@ -19,7 +19,11 @@ if [[ "$(sw_vers -productVersion | cut -d. -f1)" -lt 14 ]]; then
 fi
 
 echo "Downloading NotchIsland..."
-curl -fL --progress-bar "$URL" -o "$TMP/NotchIsland.dmg"
+if ! curl -fL --progress-bar "$URL" -o "$TMP/NotchIsland.dmg"; then
+    echo "Could not download NotchIsland: no release has been published yet." >&2
+    echo "See https://github.com/silky-itt/NotchIsland#build-it-yourself to build it from source." >&2
+    exit 1
+fi
 
 mkdir -p "$MOUNT"
 hdiutil attach "$TMP/NotchIsland.dmg" -mountpoint "$MOUNT" -nobrowse -quiet
