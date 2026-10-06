@@ -31,7 +31,7 @@ enum Settings {
         static let showPercentage = true
         static let transparentCollapsed = false
         static let showPet = true
-        static let petKind = PetKind.cat
+        static let petKind = "cat"   // a PetKind id
         static let outlineCollapsed = true
         static let pinDuringSpaceSwitch = true
         static let hudVolume = true

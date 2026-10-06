@@ -108,7 +108,7 @@ struct NotchView: View {
         // The cat stands outside the notch, just past its right edge, and follows that edge as it widens
         .overlay(alignment: .trailing) {
             if petVisible {
-                PetView(kind: petKind, mood: petMood)
+                PetView(kind: PetKind.named(petKind), mood: petMood)
                     .frame(width: Self.petSize, height: Self.petSize)
                     .offset(x: Self.petSize + Self.petGap)
                     .allowsHitTesting(false)

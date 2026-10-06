@@ -1,41 +1,71 @@
 import CoreGraphics
+import Foundation
 
-/// Which pet sits beside the notch (chosen in Settings).
-enum PetKind: String, CaseIterable, Identifiable {
-    case cat, dog, bunny, panda, frog, fox, penguin, chick, ghost, robot, slime
+/// Which pet sits beside the notch (chosen in Settings, stored by `id`).
+struct PetKind: Identifiable, Hashable {
+    let id: String
+    let title: String
+    private let load: () -> PetSprites
 
-    var id: String { rawValue }
+    var sprites: PetSprites { load() }
 
-    var title: String {
-        switch self {
-        case .cat: "Cat"
-        case .dog: "Dog"
-        case .bunny: "Bunny"
-        case .panda: "Panda"
-        case .frog: "Frog"
-        case .fox: "Fox"
-        case .penguin: "Penguin"
-        case .chick: "Chick"
-        case .ghost: "Ghost"
-        case .robot: "Robot"
-        case .slime: "Slime"
-        }
+    private init(_ id: String, _ title: String, _ load: @escaping () -> PetSprites) {
+        self.id = id
+        self.title = title
+        self.load = load
     }
 
-    var sprites: PetSprites {
-        switch self {
-        case .cat: PetSprites.cat
-        case .dog: PetSprites.dog
-        case .bunny: PetSprites.bunny
-        case .panda: PetSprites.panda
-        case .frog: PetSprites.frog
-        case .fox: PetSprites.fox
-        case .penguin: PetSprites.penguin
-        case .chick: PetSprites.chick
-        case .ghost: PetSprites.ghost
-        case .robot: PetSprites.robot
-        case .slime: PetSprites.slime
-        }
+    static func == (lhs: PetKind, rhs: PetKind) -> Bool { lhs.id == rhs.id }
+    func hash(into hasher: inout Hasher) { hasher.combine(id) }
+
+    static let builtIn: [PetKind] = [
+        PetKind("cat", "Cat") { PetSprites.cat },
+        PetKind("dog", "Dog") { PetSprites.dog },
+        PetKind("bunny", "Bunny") { PetSprites.bunny },
+        PetKind("panda", "Panda") { PetSprites.panda },
+        PetKind("frog", "Frog") { PetSprites.frog },
+        PetKind("fox", "Fox") { PetSprites.fox },
+        PetKind("penguin", "Penguin") { PetSprites.penguin },
+        PetKind("chick", "Chick") { PetSprites.chick },
+        PetKind("ghost", "Ghost") { PetSprites.ghost },
+        PetKind("robot", "Robot") { PetSprites.robot },
+        PetKind("slime", "Slime") { PetSprites.slime },
+    ]
+
+    /// Extra pets drawn by the user, read once at launch from `customFolder`. They stay on this Mac:
+    /// they are not part of the source code or of a release build.
+    static let custom: [PetKind] = loadCustom()
+
+    static var all: [PetKind] { builtIn + custom }
+
+    /// The pet stored in Settings, or the cat if it no longer exists (e.g. its custom file was removed).
+    static func named(_ id: String) -> PetKind { all.first { $0.id == id } ?? builtIn[0] }
+
+    /// ~/Library/Application Support/NotchIsland/Pets — one JSON file per pet:
+    /// `{"title": "…", "base": [15 rows of 15 characters], "blink": {"5": "row"}, "happy": {"5": "row"},
+    ///   "colors": {"O": "#F2A65A"}}`. Same grid rules as the built-in pets below.
+    static let customFolder = URL.applicationSupportDirectory.appending(path: "NotchIsland/Pets", directoryHint: .isDirectory)
+
+    private struct CustomFile: Decodable {
+        let title: String
+        let base: [String]
+        let blink: [String: String]
+        let happy: [String: String]
+        let colors: [String: String]
+    }
+
+    private static func loadCustom() -> [PetKind] {
+        let files = (try? FileManager.default.contentsOfDirectory(at: customFolder, includingPropertiesForKeys: nil)) ?? []
+        return files
+            .filter { $0.pathExtension == "json" }
+            .sorted { $0.lastPathComponent < $1.lastPathComponent }
+            .compactMap { url in
+                guard let data = try? Data(contentsOf: url),
+                      let file = try? JSONDecoder().decode(CustomFile.self, from: data),
+                      let sprites = PetSprites(custom: file.base, blink: file.blink, happy: file.happy, colors: file.colors)
+                else { return nil }   // a broken file is skipped instead of crashing the app
+                return PetKind("custom:" + url.deletingPathExtension().lastPathComponent, file.title) { sprites }
+            }
     }
 }
 
@@ -47,6 +77,27 @@ struct PetSprites {
     let blink: CGImage
     let happy: CGImage
     let sleepy: CGImage
+
+    /// A user-drawn pet from JSON; nil if the grid is not 15×15 or a colour is not a hex value.
+    init?(custom base: [String], blink: [String: String], happy: [String: String], colors: [String: String]) {
+        let size = 15
+        func rows(_ raw: [String: String]) -> [Int: String]? {
+            var result: [Int: String] = [:]
+            for (key, row) in raw {
+                guard let index = Int(key), (0..<size).contains(index), row.count == size else { return nil }
+                result[index] = row
+            }
+            return result
+        }
+        var palette: [Character: UInt32] = [:]
+        for (key, value) in colors {
+            guard key.count == 1, let hex = UInt32(value.trimmingCharacters(in: ["#"]), radix: 16) else { return nil }
+            palette[Character(key)] = hex
+        }
+        guard base.count == size, base.allSatisfy({ $0.count == size }),
+              let blink = rows(blink), let happy = rows(happy) else { return nil }
+        self.init(base: base, blink: blink, happy: happy, colors: palette)
+    }
 
     private init(base: [String], blink: [Int: String], happy: [Int: String], colors: [Character: UInt32]) {
         let palette = Self.shared.merging(colors) { $1 }

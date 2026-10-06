@@ -66,7 +66,7 @@ struct SettingsView: View {
                 Toggle("Pet on the right (dances to music, happy when charging, sleepy on low battery)", isOn: $showPet)
                 if showPet {
                     Picker("Pet", selection: $petKind) {
-                        ForEach(PetKind.allCases) { kind in
+                        ForEach(PetKind.all) { kind in
                             Label {
                                 Text(kind.title)
                             } icon: {
@@ -75,9 +75,17 @@ struct SettingsView: View {
                                     .resizable()
                                     .frame(width: 18, height: 18)
                             }
-                            .tag(kind)
+                            .tag(kind.id)
                         }
                     }
+                    LabeledContent("Your own pets") {
+                        Button("Open Folder") {
+                            try? FileManager.default.createDirectory(at: PetKind.customFolder, withIntermediateDirectories: true)
+                            NSWorkspace.shared.open(PetKind.customFolder)
+                        }
+                    }
+                    Text("Pets drawn as JSON files in this folder stay on this Mac. Quit and reopen NotchIsland after adding one.")
+                        .font(.caption).foregroundStyle(.secondary)
                 }
                 Toggle("Show percentage for volume & brightness", isOn: $showPercentage)
                 Toggle("Volume", isOn: $hudVolume)

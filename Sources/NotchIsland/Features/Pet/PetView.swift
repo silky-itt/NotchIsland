@@ -24,7 +24,7 @@ struct PetView: NSViewRepresentable {
 }
 
 final class PetNSView: NSView {
-    var kind: PetKind = .cat {
+    var kind: PetKind = PetKind.builtIn[0] {
         didSet { if kind != oldValue { startAnimations() } }
     }
     var mood: PetMood = .idle {
