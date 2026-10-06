@@ -2,7 +2,7 @@ import CoreGraphics
 
 /// Which pet sits beside the notch (chosen in Settings).
 enum PetKind: String, CaseIterable, Identifiable {
-    case cat, dog, bunny, panda, frog
+    case cat, dog, bunny, panda, frog, fox, penguin, chick, ghost, robot, slime
 
     var id: String { rawValue }
 
@@ -13,6 +13,12 @@ enum PetKind: String, CaseIterable, Identifiable {
         case .bunny: "Bunny"
         case .panda: "Panda"
         case .frog: "Frog"
+        case .fox: "Fox"
+        case .penguin: "Penguin"
+        case .chick: "Chick"
+        case .ghost: "Ghost"
+        case .robot: "Robot"
+        case .slime: "Slime"
         }
     }
 
@@ -23,6 +29,12 @@ enum PetKind: String, CaseIterable, Identifiable {
         case .bunny: PetSprites.bunny
         case .panda: PetSprites.panda
         case .frog: PetSprites.frog
+        case .fox: PetSprites.fox
+        case .penguin: PetSprites.penguin
+        case .chick: PetSprites.chick
+        case .ghost: PetSprites.ghost
+        case .robot: PetSprites.robot
+        case .slime: PetSprites.slime
         }
     }
 }
@@ -165,6 +177,150 @@ struct PetSprites {
         blink: [2: "KOOOK..KOOOK...", 3: "KKKKKKKKKKKK..."],
         happy: [2: "KOKOK..KOKOK...", 3: "KKOKKKKKKOKK..."],
         colors: ["O": 0x7BC86C, "L": 0xD8F0B0]   // green skin, pale belly
+    )
+
+    /// Fox with a white face and a bushy, white-tipped tail
+    static let fox = PetSprites(
+        base: [
+            ".K........K....",
+            ".KK......KK....",
+            ".KDK....KDK....",
+            ".KOOKKKKOOK....",
+            "KOOOOOOOOOOK...",
+            "KOEWOOOOEWOK...",
+            "KLEELLLLEELK...",
+            ".KLLLKKLLLK....",
+            "..KLLLLLLK..KK.",
+            "..KKKKKKKK.KOOK",
+            "..KOOOOOOK.KOOK",
+            ".KOLLLLLOOKKOLK",
+            ".KOLLLLLOOOKLLK",
+            ".KOOKOOKOOOOKK.",
+            "..KKKKKKKKKK...",
+        ],
+        blink: [5: "KOOOOOOOOOOK...", 6: "KLKKLLLLKKLK..."],
+        happy: [5: "KOOKOOOOKOOK...", 6: "KLKLKLLKLKLK..."],
+        colors: ["O": 0xF07A2A, "L": 0xFFF4E6, "D": 0xB4541A]   // orange fur, white face, darker ears
+    )
+
+    /// Penguin with flippers, a yellow beak and yellow feet
+    static let penguin = PetSprites(
+        base: [
+            "...............",
+            "...KKKKKK......",
+            "..KBBBBBBK.....",
+            ".KBBBBBBBBK....",
+            ".KBLLBBLLBK....",
+            ".KLEWLLEWLK....",
+            ".KLLLYYLLLK....",
+            "KBKLLLLLLKBK...",
+            "KBKLLLLLLKBK...",
+            "KBKLLLLLLKBK...",
+            "KBKLLLLLLKBK...",
+            ".KKLLLLLLKK....",
+            "..KBLLLLBK.....",
+            "..KYYKKYYK.....",
+            "..KKK..KKK.....",
+        ],
+        blink: [5: ".KLKKLLKKLK...."],
+        happy: [5: ".KLKKLLKKLK....", 6: ".KPLLYYLLPK...."],
+        colors: ["B": 0x2B2D42, "L": 0xF8F8F8, "Y": 0xF5A623]   // navy back, white front, yellow beak and feet
+    )
+
+    /// Round yellow chick with a little tuft
+    static let chick = PetSprites(
+        base: [
+            "...............",
+            "......KK.......",
+            ".....KYK.......",
+            "...KKKYYKK.....",
+            "..KYYYYYYYYK...",
+            ".KYYEYYYYEYYK..",
+            ".KYPYYOOYYPYK..",
+            ".KYYYYYYYYYYK..",
+            "KYKYYYYYYYYKYK.",
+            "KYKYYYYYYYYKYK.",
+            ".KKYYYYYYYYKK..",
+            "..KYYYYYYYYK...",
+            "...KKKKKKKK....",
+            "....OO..OO.....",
+            "...............",
+        ],
+        blink: [5: ".KYKKYYYYKKYK.."],
+        happy: [5: ".KYKKYYYYKKYK..", 6: ".KPPYYOOYYPPK.."],
+        colors: ["Y": 0xFFD43B, "O": 0xF59F00]   // yellow down, orange beak and feet
+    )
+
+    /// Little ghost with a wavy hem
+    static let ghost = PetSprites(
+        base: [
+            "...............",
+            "...KKKKKK......",
+            "..KGGGGGGK.....",
+            ".KGGGGGGGGK....",
+            "KGGGGGGGGGGK...",
+            "KGGEGGGGEGGK...",
+            "KGGEGGGGEGGK...",
+            "KGPGGKKGGPGK...",
+            "KGGGGGGGGGGK...",
+            "KGGGGGGGGGGK...",
+            "KGGGGGGGGGGK...",
+            "KGGGGGGGGGGK...",
+            "KGGGGGGGGGGK...",
+            "KGK.KGGK.KGK...",
+            ".K...KK...K....",
+        ],
+        blink: [5: "KGGGGGGGGGGK...", 6: "KGEEGGGGEEGK..."],
+        happy: [6: "KGEGEGGEGEGK..."],
+        colors: ["G": 0xF1F3FF]   // pale body
+    )
+
+    /// Small robot with an antenna light and a glowing visor
+    static let robot = PetSprites(
+        base: [
+            ".....RR........",
+            ".....KK........",
+            "..KKKKKKKK.....",
+            ".KSSSSSSSSK....",
+            ".KSKKKKKKSK....",
+            ".KSKCKKCKSK....",
+            ".KSKKKKKKSK....",
+            ".KSSSSSSSSK....",
+            ".KSSKKKKSSK....",
+            "..KKKKKKKK.....",
+            "KKSSSSSSSSKK...",
+            "KSKSRSSCSKSK...",
+            "KKKSSSSSSKKK...",
+            "...KSKKSK......",
+            "...KKKKKK......",
+        ],
+        blink: [5: ".KSKKKKKKSK...."],
+        happy: [4: ".KSKCKKCKSK....", 5: ".KSCKCCKCSK...."],
+        colors: ["S": 0xAEB8C4, "C": 0x4DD8FF, "R": 0xFF4D4D]   // steel body, cyan eyes, red lights
+    )
+
+    /// Bouncy blue slime
+    static let slime = PetSprites(
+        base: [
+            "...............",
+            "...............",
+            "...............",
+            "...............",
+            "...............",
+            "....KKKK.......",
+            "..KKMMMMKK.....",
+            ".KMWMMMMMMK....",
+            "KMWMMMMMMMMK...",
+            "KMMEWMMEWMMK...",
+            "KMMEEMMEEMMK...",
+            "KMMMMKKMMMMK...",
+            "KMMMMMMMMMMMK..",
+            "KMMMMMMMMMMMK..",
+            ".KKKKKKKKKKK...",
+        ],
+        blink: [9: "KMMMMMMMMMMK...", 10: "KMMKKMMKKMMK..."],
+        happy: [9: "KMMMKMMMKMMK...", 10: "KMMKMKMKMKMK..."],
+        colors: ["M": 0x7DD3FC]   // light blue
     )
 
     // MARK: - Drawing

@@ -10,7 +10,7 @@ A "Dynamic Island" for the notch of your MacBook, written in SwiftUI + AppKit. I
 - **Bluetooth** connect / disconnect and a **charging** indicator
 - **Calendar**: today's remaining events, or the next one within 7 days
 - **Shelf**: drop files and images (from Finder, browsers, screenshots or the clipboard); click it to see everything on it
-- **Pet** next to the notch (cat, dog, bunny, panda or frog) that dances to music
+- **Pet** next to the notch (cat, dog, bunny, panda, frog, fox, penguin, chick, ghost, robot or slime) that dances to music
 - **Stays put** under the real notch while you swipe between desktops
 - **Settings** window, plus an optional transparent collapsed notch and a thin outline around it
 
