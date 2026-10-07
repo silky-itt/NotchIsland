@@ -132,7 +132,7 @@ git pull
 swift Tools/make-icon.swift   # regenerates the app icon
 ```
 
-- Your own pets: put JSON files in `~/Library/Application Support/NotchIsland/Pets` (Settings → Open Folder), then reopen the app. Format: `{"title": "…", "base": [15 rows of 15 characters], "blink": {"5": "row"}, "happy": {"5": "row"}, "colors": {"O": "#F2A65A"}}`; see `PetSprites.swift` for the grid rules and the shared colours. They stay on your Mac and are never part of a release.
+- Your own pets: put JSON files in `~/Library/Application Support/NotchIsland/Pets` (Settings → Open Folder), then reopen the app. Format: `{"title": "…", "base": [15 to 24 rows, each as long as there are rows], "blink": {"5": "row"}, "happy": {"5": "row"}, "colors": {"O": "#F2A65A"}}`; see `PetSprites.swift` for the grid rules and the shared colours. They stay on your Mac and are never part of a release.
 - Publishing a release: bump the version in `Resources/Info.plist`, run `./package.sh`, then `gh release create v<version> build/NotchIsland.dmg`. Keep the asset name `NotchIsland.dmg`: `install.sh` and the download link use it.
 - Open `Package.swift` in Xcode to use SwiftUI previews (`Sources/NotchIsland/Expanded/Previews.swift`).
 - The brightness HUD uses a private macOS framework (DisplayServices). If a macOS update removes it, only that HUD is lost.

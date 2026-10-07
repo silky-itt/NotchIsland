@@ -42,7 +42,7 @@ struct PetKind: Identifiable, Hashable {
     static func named(_ id: String) -> PetKind { all.first { $0.id == id } ?? builtIn[0] }
 
     /// ~/Library/Application Support/NotchIsland/Pets — one JSON file per pet:
-    /// `{"title": "…", "base": [15 rows of 15 characters], "blink": {"5": "row"}, "happy": {"5": "row"},
+    /// `{"title": "…", "base": [15 to 24 rows, each as long as there are rows], "blink": {"5": "row"}, "happy": {"5": "row"},
     ///   "colors": {"O": "#F2A65A"}}`. Same grid rules as the built-in pets below.
     static let customFolder = URL.applicationSupportDirectory.appending(path: "NotchIsland/Pets", directoryHint: .isDirectory)
 
@@ -71,16 +71,17 @@ struct PetKind: Identifiable, Hashable {
 
 /// Pixel-art pets, drawn from text grids (one character = one pixel, 15×15). Each pet is built the first time
 /// it is shown; each frame is ~1 KB.
-/// Columns 12-14 of rows 0-3 are left empty in every pet: that is where the sleepy "z" goes.
+/// The last 3 columns of rows 0-3 are left empty in every pet: that is where the sleepy "z" goes.
 struct PetSprites {
     let open: CGImage
     let blink: CGImage
     let happy: CGImage
     let sleepy: CGImage
 
-    /// A user-drawn pet from JSON; nil if the grid is not 15×15 or a colour is not a hex value.
+    /// A user-drawn pet from JSON; nil if the grid is not square (15×15 up to 24×24) or a colour is not a hex value.
     init?(custom base: [String], blink: [String: String], happy: [String: String], colors: [String: String]) {
-        let size = 15
+        let size = base.count
+        guard (15...24).contains(size) else { return nil }
         func rows(_ raw: [String: String]) -> [Int: String]? {
             var result: [Int: String] = [:]
             for (key, row) in raw {
@@ -385,12 +386,12 @@ struct PetSprites {
         "Z": 0xCFE3FF,   // "z" when sleepy
     ]
 
-    /// Writes a small "z" into the top-right corner (columns 12-14 of rows 0-3).
+    /// Writes a small "z" into the top-right corner (last 3 columns of rows 0-3).
     private static func zzz(_ rows: [String]) -> [Int: String] {
         let letter = ["ZZZ", "..Z", ".Z.", "ZZZ"]
         var result: [Int: String] = [:]
         for (index, part) in letter.enumerated() {
-            result[index] = String(rows[index].prefix(12)) + part
+            result[index] = String(rows[index].prefix(rows[index].count - 3)) + part
         }
         return result
     }
