@@ -42,7 +42,7 @@ struct PetKind: Identifiable, Hashable {
     static func named(_ id: String) -> PetKind { all.first { $0.id == id } ?? builtIn[0] }
 
     /// ~/Library/Application Support/NotchIsland/Pets — one JSON file per pet:
-    /// `{"title": "…", "base": [15 to 24 rows, each as long as there are rows], "blink": {"5": "row"}, "happy": {"5": "row"},
+    /// `{"title": "…", "base": [15 to 48 rows, each as long as there are rows], "blink": {"5": "row"}, "happy": {"5": "row"},
     ///   "colors": {"O": "#F2A65A"}}`. Same grid rules as the built-in pets below.
     static let customFolder = URL.applicationSupportDirectory.appending(path: "NotchIsland/Pets", directoryHint: .isDirectory)
 
@@ -78,10 +78,10 @@ struct PetSprites {
     let happy: CGImage
     let sleepy: CGImage
 
-    /// A user-drawn pet from JSON; nil if the grid is not square (15×15 up to 24×24) or a colour is not a hex value.
+    /// A user-drawn pet from JSON; nil if the grid is not square (15×15 up to 48×48) or a colour is not a hex value.
     init?(custom base: [String], blink: [String: String], happy: [String: String], colors: [String: String]) {
         let size = base.count
-        guard (15...24).contains(size) else { return nil }
+        guard (15...48).contains(size) else { return nil }
         func rows(_ raw: [String: String]) -> [Int: String]? {
             var result: [Int: String] = [:]
             for (key, row) in raw {
